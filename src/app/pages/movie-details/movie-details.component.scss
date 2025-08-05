@@ -1,0 +1,66 @@
+.movie-details {
+    background-color: #000000;
+    /* Black background to match HomeComponent */
+    color: #ffffff;
+    /* White text for readability */
+    min-height: 100vh;
+    /* Ensure full height */
+    padding: 20px;
+}
+
+.poster {
+    border-radius: 8px;
+    max-width: 100%;
+    height: auto;
+}
+
+.movie-title {
+    color: #e50914;
+    /* Netflix red for title */
+    font-weight: bold;
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.movie-overview {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    line-height: 1.5;
+}
+
+/* Responsive styles */
+@media (max-width: 576px) {
+    .movie-title {
+        font-size: 1.8rem;
+        /* Smaller title on mobile */
+    }
+
+    .movie-overview {
+        font-size: 0.9rem;
+        /* Smaller overview on mobile */
+    }
+
+    .poster {
+        margin-bottom: 1rem;
+    }
+}
+
+@media (min-width: 768px) {
+    .movie-title {
+        font-size: 3rem;
+        /* Larger title on tablets */
+    }
+
+    .movie-overview {
+        font-size: 1.2rem;
+        /* Larger overview on tablets */
+    }
+}
+
+@media (min-width: 992px) {
+    .movie-title {
+        font-size: 3.5rem;
+        /* Even larger title on desktops */
+    }
+}
+

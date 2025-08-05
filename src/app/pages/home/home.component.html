@@ -1,0 +1,110 @@
+<div class="container-fluid">
+  <!-- Carousel -->
+  <div id="carouselExampleCaptions" class="carousel slide">
+    <div class="carousel-inner">
+      <div
+        class="carousel-item"
+        *ngFor="let b of bannerResult; let i = index"
+        [ngClass]="{ active: i === 0 }"
+      >
+        <img
+          src="https://image.tmdb.org/t/p/w780/{{ b.backdrop_path }}"
+          class="d-block w-100 carousel-img"
+          alt="{{ b.original_title || b.name }}"
+        />
+        <div class="carousel-caption">
+          <h2 class="carousel-title">{{ b.original_title || b.name }}</h2>
+          <p class="carousel-overview">{{ b.overview }}</p>
+        </div>
+      </div>
+    </div>
+    <button
+      class="carousel-control-prev"
+      type="button"
+      data-bs-target="#carouselExampleCaptions"
+      data-bs-slide="prev"
+    >
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button
+      class="carousel-control-next"
+      type="button"
+      data-bs-target="#carouselExampleCaptions"
+      data-bs-slide="next"
+    >
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
+    </button>
+  </div>
+</div>
+
+<div class="contain mt-3 p-4">
+  <!-- Loading and Error States -->
+  <div *ngIf="isLoading" class="text-center mt-3">
+    <div class="spinner-border text-light" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+  <div *ngIf="errorMessage" class="alert alert-danger mt-3">{{ errorMessage }}</div>
+
+  <!-- Trending Movies -->
+  <div class="row mt-4" *ngIf="trendingMovieResult.length > 0">
+    <h5 class="text-white">Trending Movies</h5>
+    <div class="rowposter mt-3 p-2">
+      <ng-container *ngFor="let t of trendingMovieResult">
+        <img
+          src="https://image.tmdb.org/t/p/w200/{{ t.poster_path }}"
+          class="rowimg largeposter"
+          alt="{{ t.original_title }}"
+          routerLink="/movie/{{ t.id }}"
+        />
+      </ng-container>
+    </div>
+  </div>
+
+  <!-- Popular Movies -->
+  <div class="row mt-4" *ngIf="popularMovieResult.length > 0">
+    <h5 class="text-white">Popular Movies</h5>
+    <div class="rowposter mt-3 p-2">
+      <ng-container *ngFor="let t of popularMovieResult">
+        <img
+          src="https://image.tmdb.org/t/p/w200/{{ t.poster_path }}"
+          class="rowimg largeposter"
+          alt="{{ t.original_title }}"
+          routerLink="/movie/{{ t.id }}"
+        />
+      </ng-container>
+    </div>
+  </div>
+
+  <!-- Top Rated Movies -->
+  <div class="row mt-4" *ngIf="topRatedMovieResult.length > 0">
+    <h5 class="text-white">Top Rated Movies</h5>
+    <div class="rowposter mt-3 p-2">
+      <ng-container *ngFor="let t of topRatedMovieResult">
+        <img
+          src="https://image.tmdb.org/t/p/w200/{{ t.poster_path }}"
+          class="rowimg largeposter"
+          alt="{{ t.original_title }}"
+          routerLink="/movie/{{ t.id }}"
+        />
+      </ng-container>
+    </div>
+  </div>
+
+  <!-- Upcoming Movies -->
+  <div class="row mt-4" *ngIf="upcomingMovieResult.length > 0">
+    <h5 class="text-white">Upcoming Movies</h5>
+    <div class="rowposter mt-3 p-2">
+      <ng-container *ngFor="let t of upcomingMovieResult">
+        <img
+          src="https://image.tmdb.org/t/p/w200/{{ t.poster_path }}"
+          class="rowimg largeposter"
+          alt="{{ t.original_title }}"
+          routerLink="/movie/{{ t.id }}"
+        />
+      </ng-container>
+    </div>
+  </div>
+</div>

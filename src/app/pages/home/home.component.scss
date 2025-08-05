@@ -1,0 +1,155 @@
+/* Black background for the movie sections */
+.contain {
+    background-color: #000000;
+    /* Black background to match carousel */
+    border-radius: 8px;
+    color: #ffffff;
+    /* White text for readability */
+}
+
+/* Carousel styles */
+.carousel {
+    background-color: #000000;
+    /* Ensure carousel has a black background */
+}
+
+.carousel-img {
+    max-height: 600px;
+    /* Default height for larger screens */
+    object-fit: cover;
+    /* Ensure images cover the carousel without distortion */
+}
+
+/* Carousel caption styles */
+.carousel-caption {
+    background: rgba(0, 0, 0, 0.7);
+    /* Semi-transparent black background */
+    border-radius: 4px;
+    padding: 10px 15px;
+    bottom: 20px;
+    /* Position above bottom edge */
+    z-index: 10;
+    /* Ensure captions are above images */
+}
+
+.carousel-title {
+    color: #e50914;
+    /* Netflix red for title */
+    font-weight: bold;
+    font-size: 1.8rem;
+    /* Default for medium screens */
+    margin-bottom: 0.5rem;
+}
+
+.carousel-overview {
+    color: #ffffff;
+    /* White for overview text */
+    font-size: 1rem;
+    /* Default for medium screens */
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    /* Limit to 3 lines */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Movie poster styles */
+.rowposter {
+    display: flex;
+    overflow-x: auto;
+    overflow-y: hidden;
+    /* Hide vertical scrollbar */
+    gap: 10px;
+    padding-bottom: 10px;
+    scrollbar-width: none;
+    /* Hide scrollbar for Firefox */
+}
+
+.rowposter::-webkit-scrollbar {
+    display: none;
+    /* Hide scrollbar for Chrome, Safari, Edge */
+}
+
+.rowimg {
+    width: 200px;
+    max-height: 300px;
+    /* Consistent with .largeposter */
+    object-fit: contain;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: transform 0.45s;
+}
+
+.rowimg:hover {
+    transform: scale(1.09);
+    /* Slightly larger hover effect */
+}
+
+.largeposter {
+    max-height: 300px;
+    /* Consistent height for posters */
+}
+
+.text-white {
+    font-weight: 500;
+    margin-bottom: 10px;
+}
+
+/* Responsive styles */
+@media (max-width: 576px) {
+    .carousel-img {
+        max-height: 300px;
+        /* Smaller images on mobile */
+    }
+
+    .carousel-title {
+        font-size: 1.2rem;
+        /* Smaller title on mobile */
+    }
+
+    .carousel-overview {
+        font-size: 0.8rem;
+        /* Smaller overview on mobile */
+        -webkit-line-clamp: 2;
+        /* Limit to 2 lines on mobile */
+    }
+
+    .rowimg {
+        width: 150px;
+        /* Smaller posters on mobile */
+        max-height: 225px;
+        /* Adjust for mobile */
+    }
+}
+
+@media (min-width: 768px) {
+    .carousel-title {
+        font-size: 2.2rem;
+        /* Larger title on tablets and desktops */
+    }
+
+    .carousel-overview {
+        font-size: 1.2rem;
+        /* Larger overview on tablets and desktops */
+        -webkit-line-clamp: 4;
+        /* Allow more text on larger screens */
+    }
+}
+
+@media (min-width: 992px) {
+    .carousel-img {
+        max-height: 700px;
+        /* Larger images on desktops */
+    }
+
+    .carousel-title {
+        font-size: 2.5rem;
+        /* Even larger title on desktops */
+    }
+
+    .carousel-overview {
+        font-size: 1.3rem;
+        /* Larger overview on desktops */
+    }
+}
