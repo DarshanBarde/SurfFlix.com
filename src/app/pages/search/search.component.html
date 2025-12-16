@@ -1,48 +1,111 @@
-<div class="contain mt-5 p-5">
-  <form [formGroup]="searchForm" (ngSubmit)="submitForm()">
-    <div class="row">
-      <div class="mb-3 col-lg-10">
+<div class="epic-search">
+  <div class="search-container">
+    <!-- Search Header -->
+    <div class="search-header">
+      <h1 class="search-heading">Find Your Next Movie</h1>
+      <p class="search-subheading">Discover thousands of movies from our library</p>
+    </div>
+
+    <!-- Search Form -->
+    <form [formGroup]="searchForm" (ngSubmit)="submitForm()" class="search-form">
+      <div class="search-input-wrapper">
+        <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <path d="m21 21-4.35-4.35"></path>
+        </svg>
         <input
           type="text"
-          class="form-control"
+          class="search-input"
           formControlName="movieName"
-          placeholder="Search Movie Here..."
+          placeholder="Search for movies, actors, or genres..."
+          (keyup.enter)="submitForm()"
         />
-        <div *ngIf="searchForm.get('movieName')?.invalid && searchForm.get('movieName')?.touched" class="text-danger">
-          Movie name is required
-        </div>
-      </div>
-      <div class="col-lg-2">
-        <button type="submit" class="btn btn-primary btn-md" [disabled]="isLoading">
+        <button type="submit" class="search-btn" [disabled]="isLoading">
           {{ isLoading ? 'Searching...' : 'Search' }}
         </button>
       </div>
-    </div>
-  </form>
+      <div *ngIf="searchForm.get('movieName')?.invalid && searchForm.get('movieName')?.touched" class="error-text">
+        Please enter a movie name
+      </div>
+    </form>
 
-  <div *ngIf="errorMessage" class="alert alert-danger mt-3">{{ errorMessage }}</div>
-  <div *ngIf="isLoading" class="text-center mt-3">
-    <div class="spinner-border" role="status">
-      <span class="visually-hidden">Loading...</span>
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="loading-state">
+      <div class="spinner"></div>
+      <p>Searching library...</p>
     </div>
-  </div>
 
-  <div class="row mt-5" *ngIf="searchResult.length > 0">
-    <div class="col-lg-4" *ngFor="let s of searchResult">
-      <div class="row">
-        <div class="col-lg-3 mt-4 mb-4" *ngIf="s.poster_path">
-          <img
-            src="https://image.tmdb.org/t/p/w200/{{ s.poster_path }}"
-            class="img-fluid"
-            alt="{{ s.original_title }}"
-            routerLink="/movie/{{ s.id }}"
-          />
-        </div>
-        <div class="col-lg-9 mt-4 mb-4">
-          <h5>{{ s.original_title }}</h5>
-          <p>{{ s.release_date | date: 'mediumDate' }}</p>
+    <!-- Error State -->
+    <div *ngIf="errorMessage" class="error-state">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="8" x2="12" y2="12"></line>
+        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+      </svg>
+      <p>{{ errorMessage }}</p>
+    </div>
+
+    <!-- Search Results -->
+    <div class="search-results" *ngIf="searchResult.length > 0 && !isLoading">
+      <div class="results-header">
+        <h2 class="results-title">Search Results</h2>
+        <span class="results-count">{{ searchResult.length }} movies found</span>
+      </div>
+
+      <div class="results-grid">
+        <div 
+          class="result-card" 
+          *ngFor="let movie of searchResult"
+          routerLink="/movie/{{ movie.id }}"
+        >
+          <div class="card-poster">
+            <img 
+              *ngIf="movie.poster_path"
+              [src]="'https://image.tmdb.org/t/p/w500' + movie.poster_path" 
+              [alt]="movie.original_title"
+            />
+            <div *ngIf="!movie.poster_path" class="no-poster">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                <polyline points="21 15 16 10 5 21"></polyline>
+              </svg>
+            </div>
+            <div class="card-overlay">
+              <button class="play-btn">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
+                  <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div class="card-content">
+            <h3 class="card-title">{{ movie.original_title }}</h3>
+            <div class="card-meta">
+              <span class="meta-year" *ngIf="movie.release_date">
+                {{ movie.release_date | date: 'yyyy' }}
+              </span>
+              <span class="meta-rating" *ngIf="movie.vote_average">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                </svg>
+                {{ movie.vote_average.toFixed(1) }}
+              </span>
+            </div>
+            <p class="card-description">{{ movie.overview }}</p>
+          </div>
         </div>
       </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="!isLoading && !errorMessage && searchResult.length === 0 && searchForm.get('movieName')?.value">
+      <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"></circle>
+        <path d="m21 21-4.35-4.35"></path>
+      </svg>
+      <h3>No Results Found</h3>
+      <p>We couldn't find any movies matching your search. Try different keywords.</p>
     </div>
   </div>
 </div>

@@ -1,14 +1,334 @@
-.navbar .navbar-brand{
-    color: #e50914;
-    font-weight: bold;
+.epic-layout {
+  display: flex;
+  min-height: 100vh;
+  background-color: #0d0f13;
 }
-.navbar-nav .nav-item .nav-link{
-    color:#e50914;
-    
+
+// Left Sidebar
+.epic-sidebar {
+  width: 220px;
+  background-color: #121419;
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 100;
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+
+  .sidebar-logo {
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+
+    .logo-icon {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, #0074e4 0%, #00a8ff 100%);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 20px;
+      color: white;
+    }
+  }
+
+  .sidebar-nav {
+    padding: 16px 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      color: #b8bcc4;
+      text-decoration: none;
+      border-radius: 8px;
+      margin-bottom: 4px;
+      transition: all 0.2s;
+      font-size: 14px;
+      font-weight: 500;
+
+      svg {
+        flex-shrink: 0;
+      }
+
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.05);
+        color: #ffffff;
+      }
+
+      &.active {
+        background-color: #2a2e38;
+        color: #ffffff;
+      }
+    }
+  }
+
+  .quick-launch {
+    padding: 20px 12px;
+    flex: 1;
+    overflow-y: auto;
+
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 3px;
+    }
+
+    .quick-launch-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: #6b7280;
+      margin-bottom: 16px;
+      letter-spacing: 0.5px;
+    }
+
+    .quick-launch-items {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+
+      .quick-item {
+        cursor: pointer;
+        border-radius: 6px;
+        overflow: hidden;
+        transition: transform 0.2s;
+
+        &:hover {
+          transform: scale(1.05);
+        }
+
+        img {
+          width: 100%;
+          height: auto;
+          display: block;
+          border-radius: 6px;
+        }
+      }
+    }
+  }
 }
-.navbar-brand {
-    font-size: 2rem;
-    /* Adjust this value to make "SurfFlix" bigger (e.g., 2rem, 2.5rem, 32px, etc.) */
-    font-weight: bold;
-    /* Optional: Make it bold for emphasis */
+
+// Main Content
+.epic-main {
+  flex: 1;
+  margin-left: 220px;
+  display: flex;
+  flex-direction: column;
+}
+
+// Top Navigation
+.epic-topnav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background-color: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 32px;
+  transition: all 0.3s;
+  backdrop-filter: blur(0px);
+
+  .topnav-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex: 1;
+
+    .back-btn {
+      background: none;
+      border: none;
+      color: #b8bcc4;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.05);
+        color: white;
+      }
+    }
+
+    .search-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background-color: #2a2e38;
+      padding: 10px 16px;
+      border-radius: 24px;
+      max-width: 400px;
+      width: 100%;
+
+      svg {
+        color: #6b7280;
+        flex-shrink: 0;
+      }
+
+      input {
+        background: none;
+        border: none;
+        outline: none;
+        color: #ffffff;
+        font-size: 14px;
+        width: 100%;
+        cursor: pointer;
+
+        &::placeholder {
+          color: #6b7280;
+        }
+      }
+    }
+  }
+
+  .topnav-center {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    flex: 1;
+    justify-content: center;
+
+    .nav-link {
+      color: #b8bcc4;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: color 0.2s;
+
+      &:hover {
+        color: #ffffff;
+      }
+    }
+  }
+
+  .topnav-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+    justify-content: flex-end;
+
+    .icon-btn {
+      background: none;
+      border: none;
+      color: #b8bcc4;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      position: relative;
+
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.05);
+        color: white;
+      }
+
+      &.cart {
+        .badge {
+          position: absolute;
+          top: 2px;
+          right: 2px;
+          background-color: #0074e4;
+          color: white;
+          font-size: 10px;
+          font-weight: bold;
+          padding: 2px 5px;
+          border-radius: 10px;
+          min-width: 16px;
+          text-align: center;
+        }
+      }
+
+      &.profile {
+        .profile-avatar {
+          width: 32px;
+          height: 32px;
+          background: linear-gradient(135deg, #0074e4 0%, #00a8ff 100%);
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: 600;
+          font-size: 14px;
+          color: white;
+        }
+      }
+    }
+  }
+}
+
+// Content Area
+.epic-content {
+  flex: 1;
+  padding-top: 0;
+}
+
+// Responsive
+@media (max-width: 968px) {
+  .epic-sidebar {
+    width: 80px;
+
+    .sidebar-logo {
+      padding: 16px;
+
+      .logo-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
+      }
+    }
+
+    .sidebar-nav .nav-item span,
+    .quick-launch {
+      display: none;
+    }
+  }
+
+  .epic-main {
+    margin-left: 80px;
+  }
+
+  .topnav-center {
+    display: none !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .epic-sidebar {
+    display: none;
+  }
+
+  .epic-main {
+    margin-left: 0;
+  }
+
+  .epic-topnav {
+    padding: 12px 16px;
+
+    .topnav-left .search-bar {
+      max-width: 200px;
+    }
+  }
 }

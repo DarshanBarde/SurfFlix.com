@@ -1,110 +1,311 @@
-<div class="container-fluid">
-  <!-- Carousel -->
-  <div id="carouselExampleCaptions" class="carousel slide">
-    <div class="carousel-inner">
+<div class="epic-home">
+  <!-- Hero Section -->
+  <section class="hero-section" *ngIf="bannerResult.length > 0">
+    <div class="hero-slider">
+      <!-- Updated to use currentHeroIndex and added smooth transitions -->
       <div
-        class="carousel-item"
-        *ngFor="let b of bannerResult; let i = index"
-        [ngClass]="{ active: i === 0 }"
+        class="hero-slide"
+        [class.transitioning]="isTransitioning"
+        [style.background-image]="'url(https://image.tmdb.org/t/p/original/' + getCurrentHero().backdrop_path + ')'"
       >
-        <img
-          src="https://image.tmdb.org/t/p/w780/{{ b.backdrop_path }}"
-          class="d-block w-100 carousel-img"
-          alt="{{ b.original_title || b.name }}"
-        />
-        <div class="carousel-caption">
-          <h2 class="carousel-title">{{ b.original_title || b.name }}</h2>
-          <p class="carousel-overview">{{ b.overview }}</p>
+        <div class="hero-overlay-enhanced"></div>
+        <div class="hero-gradient-enhanced"></div>
+        <div class="hero-content">
+          <div class="hero-info">
+            <div class="hero-badge" *ngIf="getCurrentHero().vote_average">
+              <span class="badge-discount">-{{ (100 - getCurrentHero().vote_average * 10).toFixed(0) }}%</span>
+            </div>
+            <h1 class="hero-title">{{ getCurrentHero().original_title || getCurrentHero().name }}</h1>
+            <p class="hero-description">{{ getCurrentHero().overview }}</p>
+            <div class="hero-meta">
+              <span class="meta-item" *ngIf="getCurrentHero().release_date">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                  <line x1="16" y1="2" x2="16" y2="6"></line>
+                  <line x1="8" y1="2" x2="8" y2="6"></line>
+                  <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+                {{ getCurrentHero().release_date | date: 'yyyy' }}
+              </span>
+              <span class="meta-item" *ngIf="getCurrentHero().vote_average">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                </svg>
+                {{ getCurrentHero().vote_average.toFixed(1) }}
+              </span>
+            </div>
+            <div class="hero-price" *ngIf="getCurrentHero().vote_average">
+              <span class="price-original">₹3,999</span>
+              <span class="price-current">₹{{ (getCurrentHero().vote_average * 400).toFixed(2) }}</span>
+            </div>
+            <div class="hero-actions">
+              <button class="btn-primary" routerLink="/movie/{{ getCurrentHero().id }}">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M8 5v14l11-7z"/>
+                </svg>
+                Watch Now
+              </button>
+              <button class="btn-icon" title="Add to Wishlist">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Added navigation controls -->
+        <div class="hero-controls">
+          <button class="control-arrow control-prev" (click)="prevHero()" [disabled]="isTransitioning">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M15 18l-6-6 6-6"></path>
+            </svg>
+          </button>
+          <button class="control-arrow control-next" (click)="nextHero()" [disabled]="isTransitioning">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 18l6-6-6-6"></path>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Added pagination dots -->
+        <div class="hero-pagination">
+          <button 
+            *ngFor="let movie of bannerResult; let i = index" 
+            class="pagination-dot"
+            [class.active]="i === currentHeroIndex"
+            (click)="selectHero(i)"
+            [disabled]="isTransitioning"
+          ></button>
         </div>
       </div>
     </div>
-    <button
-      class="carousel-control-prev"
-      type="button"
-      data-bs-target="#carouselExampleCaptions"
-      data-bs-slide="prev"
-    >
-      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-      <span class="visually-hidden">Previous</span>
-    </button>
-    <button
-      class="carousel-control-next"
-      type="button"
-      data-bs-target="#carouselExampleCaptions"
-      data-bs-slide="next"
-    >
-      <span class="carousel-control-next-icon" aria-hidden="true"></span>
-      <span class="visually-hidden">Next</span>
-    </button>
-  </div>
-</div>
 
-<div class="contain mt-3 p-4">
-  <!-- Loading and Error States -->
-  <div *ngIf="isLoading" class="text-center mt-3">
-    <div class="spinner-border text-light" role="status">
-      <span class="visually-hidden">Loading...</span>
-    </div>
-  </div>
-  <div *ngIf="errorMessage" class="alert alert-danger mt-3">{{ errorMessage }}</div>
-
-  <!-- Trending Movies -->
-  <div class="row mt-4" *ngIf="trendingMovieResult.length > 0">
-    <h5 class="text-white">Trending Movies</h5>
-    <div class="rowposter mt-3 p-2">
-      <ng-container *ngFor="let t of trendingMovieResult">
-        <img
-          src="https://image.tmdb.org/t/p/w200/{{ t.poster_path }}"
-          class="rowimg largeposter"
-          alt="{{ t.original_title }}"
-          routerLink="/movie/{{ t.id }}"
+    <!-- Right Sidebar Featured List -->
+    <div class="hero-sidebar">
+      <!-- Added click handler and active state -->
+      <div 
+        class="sidebar-item" 
+        *ngFor="let movie of bannerResult; let i = index"
+        [class.active]="i === currentHeroIndex"
+        (click)="selectHero(i)"
+      >
+        <img 
+          [src]="'https://image.tmdb.org/t/p/w200' + movie.poster_path" 
+          [alt]="movie.original_title || movie.name"
+          loading="lazy"
         />
-      </ng-container>
+        <div class="sidebar-item-info">
+          <h4>{{ movie.original_title || movie.name }}</h4>
+          <p class="sidebar-rating" *ngIf="movie.vote_average">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+            </svg>
+            {{ movie.vote_average.toFixed(1) }}
+          </p>
+        </div>
+      </div>
     </div>
+  </section>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="spinner"></div>
   </div>
 
-  <!-- Popular Movies -->
-  <div class="row mt-4" *ngIf="popularMovieResult.length > 0">
-    <h5 class="text-white">Popular Movies</h5>
-    <div class="rowposter mt-3 p-2">
-      <ng-container *ngFor="let t of popularMovieResult">
-        <img
-          src="https://image.tmdb.org/t/p/w200/{{ t.poster_path }}"
-          class="rowimg largeposter"
-          alt="{{ t.original_title }}"
-          routerLink="/movie/{{ t.id }}"
-        />
-      </ng-container>
-    </div>
+  <!-- Error State -->
+  <div *ngIf="errorMessage" class="error-container">
+    <p>{{ errorMessage }}</p>
   </div>
 
-  <!-- Top Rated Movies -->
-  <div class="row mt-4" *ngIf="topRatedMovieResult.length > 0">
-    <h5 class="text-white">Top Rated Movies</h5>
-    <div class="rowposter mt-3 p-2">
-      <ng-container *ngFor="let t of topRatedMovieResult">
-        <img
-          src="https://image.tmdb.org/t/p/w200/{{ t.poster_path }}"
-          class="rowimg largeposter"
-          alt="{{ t.original_title }}"
-          routerLink="/movie/{{ t.id }}"
-        />
-      </ng-container>
-    </div>
-  </div>
+  <!-- Movie Sections -->
+  <div class="movie-sections">
+    <!-- Discover Something New -->
+    <section class="movie-row" *ngIf="trendingMovieResult.length > 0">
+      <div class="row-header">
+        <h2 class="row-title">Discover Something New</h2>
+        <div class="row-nav">
+          <button class="nav-arrow" (click)="scrollRow(trendingRow, 'left')" #trendingLeft>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M15 18l-6-6 6-6"></path>
+            </svg>
+          </button>
+          <button class="nav-arrow" (click)="scrollRow(trendingRow, 'right')" #trendingRight>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 18l6-6-6-6"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div class="row-content" #trendingRow>
+        <div 
+          class="movie-card" 
+          *ngFor="let movie of trendingMovieResult"
+          routerLink="/movie/{{ movie.id }}"
+        >
+          <div class="card-image">
+            <img 
+              [src]="'https://image.tmdb.org/t/p/w500' + movie.backdrop_path" 
+              [alt]="movie.original_title"
+            />
+            <div class="card-overlay">
+              <svg class="play-icon" width="48" height="48" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M8 5v14l11-7z"/>
+              </svg>
+            </div>
+          </div>
+          <div class="card-info">
+            <h3 class="card-title">{{ movie.original_title }}</h3>
+            <p class="card-rating" *ngIf="movie.vote_average">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+              </svg>
+              {{ movie.vote_average.toFixed(1) }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
 
-  <!-- Upcoming Movies -->
-  <div class="row mt-4" *ngIf="upcomingMovieResult.length > 0">
-    <h5 class="text-white">Upcoming Movies</h5>
-    <div class="rowposter mt-3 p-2">
-      <ng-container *ngFor="let t of upcomingMovieResult">
-        <img
-          src="https://image.tmdb.org/t/p/w200/{{ t.poster_path }}"
-          class="rowimg largeposter"
-          alt="{{ t.original_title }}"
-          routerLink="/movie/{{ t.id }}"
-        />
-      </ng-container>
-    </div>
+    <!-- Popular Now -->
+    <section class="movie-row" *ngIf="popularMovieResult.length > 0">
+      <div class="row-header">
+        <h2 class="row-title">Popular Now</h2>
+        <div class="row-nav">
+          <button class="nav-arrow" (click)="scrollRow(popularRow, 'left')">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M15 18l-6-6 6-6"></path>
+            </svg>
+          </button>
+          <button class="nav-arrow" (click)="scrollRow(popularRow, 'right')">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 18l6-6-6-6"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div class="row-content" #popularRow>
+        <div 
+          class="movie-card" 
+          *ngFor="let movie of popularMovieResult"
+          routerLink="/movie/{{ movie.id }}"
+        >
+          <div class="card-image">
+            <img 
+              [src]="'https://image.tmdb.org/t/p/w500' + movie.backdrop_path" 
+              [alt]="movie.original_title"
+            />
+            <div class="card-overlay">
+              <svg class="play-icon" width="48" height="48" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M8 5v14l11-7z"/>
+              </svg>
+            </div>
+          </div>
+          <div class="card-info">
+            <h3 class="card-title">{{ movie.original_title }}</h3>
+            <p class="card-rating" *ngIf="movie.vote_average">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+              </svg>
+              {{ movie.vote_average.toFixed(1) }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Top Rated -->
+    <section class="movie-row" *ngIf="topRatedMovieResult.length > 0">
+      <div class="row-header">
+        <h2 class="row-title">Top Rated</h2>
+        <div class="row-nav">
+          <button class="nav-arrow" (click)="scrollRow(topRatedRow, 'left')">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M15 18l-6-6 6-6"></path>
+            </svg>
+          </button>
+          <button class="nav-arrow" (click)="scrollRow(topRatedRow, 'right')">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 18l6-6-6-6"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div class="row-content" #topRatedRow>
+        <div 
+          class="movie-card" 
+          *ngFor="let movie of topRatedMovieResult"
+          routerLink="/movie/{{ movie.id }}"
+        >
+          <div class="card-image">
+            <img 
+              [src]="'https://image.tmdb.org/t/p/w500' + movie.backdrop_path" 
+              [alt]="movie.original_title"
+            />
+            <div class="card-overlay">
+              <svg class="play-icon" width="48" height="48" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M8 5v14l11-7z"/>
+              </svg>
+            </div>
+          </div>
+          <div class="card-info">
+            <h3 class="card-title">{{ movie.original_title }}</h3>
+            <p class="card-rating" *ngIf="movie.vote_average">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+              </svg>
+              {{ movie.vote_average.toFixed(1) }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Coming Soon -->
+    <section class="movie-row" *ngIf="upcomingMovieResult.length > 0">
+      <div class="row-header">
+        <h2 class="row-title">Coming Soon</h2>
+        <div class="row-nav">
+          <button class="nav-arrow" (click)="scrollRow(upcomingRow, 'left')">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M15 18l-6-6 6-6"></path>
+            </svg>
+          </button>
+          <button class="nav-arrow" (click)="scrollRow(upcomingRow, 'right')">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 18l6-6-6-6"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div class="row-content" #upcomingRow>
+        <div 
+          class="movie-card" 
+          *ngFor="let movie of upcomingMovieResult"
+          routerLink="/movie/{{ movie.id }}"
+        >
+          <div class="card-image">
+            <img 
+              [src]="'https://image.tmdb.org/t/p/w500' + movie.backdrop_path" 
+              [alt]="movie.original_title"
+            />
+            <div class="card-overlay">
+              <svg class="play-icon" width="48" height="48" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M8 5v14l11-7z"/>
+              </svg>
+            </div>
+          </div>
+          <div class="card-info">
+            <h3 class="card-title">{{ movie.original_title }}</h3>
+            <p class="card-rating" *ngIf="movie.vote_average">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+              </svg>
+              {{ movie.vote_average.toFixed(1) }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
   </div>
 </div>

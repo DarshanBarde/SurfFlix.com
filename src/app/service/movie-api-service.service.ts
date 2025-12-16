@@ -8,7 +8,7 @@ import { catchError } from 'rxjs/operators';
 })
 export class MovieApiService {
   private baseurl = 'https://api.themoviedb.org/3';
-  private apikey = '08cc33bd5ae3a747598ce2ad84376e66';
+  private apikey = 'ce9ccd90272550a5d198fed5905039a3';
 
   constructor(private http: HttpClient) {}
 
